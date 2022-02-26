@@ -30,23 +30,28 @@ There are two things you can do about this warning:
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
- '(custom-enabled-themes (quote (misterioso)))
+ '(column-number-mode t)
+ '(custom-enabled-themes '(misterioso))
+ '(display-fill-column-indicator-column 90)
  '(global-visual-line-mode t)
+ '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(org-agenda-custom-commands
-   (quote
-    (("n" "Agenda and all TODO's"
+   '(("n" "Agenda and all TODO's"
       ((agenda ""
-	       ((org-agenda-span 10)))
+               ((org-agenda-span 10)))
        (alltodo "" nil))
-      nil))))
+      nil)))
+ '(org-agenda-files
+   '("/home/cmhyett/Dropbox/Research/TetradTurbulence/MLCoarseGrainedVGT/docs/Article/article.org" "~/Dropbox/GTD/brownBag.org" "~/Dropbox/GTD/inbox.org" "~/Dropbox/GTD/Projects/projects.org" "~/Dropbox/GTD/today.org" "~/Dropbox/GTD/tickler.org"))
  '(org-agenda-hide-tags-regexp "tj")
  '(org-agenda-tags-column -100)
- '(org-agenda-todo-ignore-scheduled (quote future))
+ '(org-agenda-todo-ignore-scheduled 'future)
  '(org-agenda-todo-list-sublevels nil)
- '(org-babel-load-languages (quote ((emacs-lisp . t) (shell . t) (python . t))))
- '(org-clock-clocktable-default-properties (quote (:maxlevel 5)))
+ '(org-babel-load-languages '((emacs-lisp . t) (shell . t) (python . t)))
+ '(org-clock-clocktable-default-properties '(:maxlevel 5))
  '(org-default-priority 68)
+ '(org-export-backends '(ascii html icalendar latex odt org taskjuggler))
  '(org-format-latex-header
    "\\documentclass{article}
 \\usepackage[usenames]{color}
@@ -89,18 +94,48 @@ There are two things you can do about this warning:
 \\newcommand{\\bigO}{\\mathcal{O}}
 \\newcommand{\\A}{\\mathcal{A}}")
  '(org-format-latex-options
-   (quote
-    (:foreground default :background default :scale 2 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-		 ("begin" "$1" "$" "$$" "\\(" "\\["))))
+   '(:foreground default :background default :scale 2 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+                 ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-hierarchical-todo-statistics nil)
  '(org-highest-priority 65)
- '(org-image-actual-width (quote (3)))
+ '(org-image-actual-width '(3))
  '(org-latex-packages-alist nil)
+ '(org-latex-toc-command "\\tableofcontents \\clearpage
+
+")
+ '(org-list-allow-alphabetical t)
  '(org-lowest-priority 70)
+ '(org-preview-latex-process-alist
+   '((dvipng :programs
+             ("latex" "dvipng")
+             :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+             (1.0 . 1.0)
+             :latex-compiler
+             ("latex -interaction nonstopmode -output-directory %o %f")
+             :image-converter
+             ("dvipng -D %D -T tight -o %O %f"))
+     (dvisvgm :programs
+              ("latex" "dvisvgm")
+              :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :image-input-type "dvi" :image-output-type "svg" :image-size-adjust
+              (1.7 . 1.5)
+              :latex-compiler
+              ("latex -interaction nonstopmode -output-directory %o %f")
+              :image-converter
+              ("dvisvgm %f -n -b min -c %S -o %O"))
+     (convert :programs
+              ("xelatex" "convert")
+              :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+              (1.0 . 1.0)
+              :latex-compiler
+              ("xelatex -interaction nonstopmode -output-directory %o %f")
+              :image-converter
+              ("convert -density %D -trim -antialias %f -quality 100 %O"))))
+ '(org-priority-default 68)
+ '(org-priority-highest 65)
+ '(org-priority-lowest 70)
  '(org-support-shift-select t)
  '(org-taskjuggler-default-reports
-   (quote
-    ("textreport report \"Plan\" {
+   '("textreport report \"Plan\" {
   formats html
   header '== %title =='
 
@@ -131,8 +166,9 @@ resourcereport resourceGraph \"\" {
   loadunit shortauto
   hidetask ~(isleaf() & isleaf_())
   sorttasks plan.start.up
-}")))
- '(package-selected-packages (quote (org-ref org-gtd auctex)))
+}"))
+ '(package-selected-packages
+   '(python-mode ess fill-column-indicator org-ref org-gtd auctex))
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(show-paren-mode t)
@@ -162,6 +198,11 @@ resourcereport resourceGraph \"\" {
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-log-done t)
 (require 'org-attach-git)
+(require 'org-inlinetask)
+
+;; customize org numbering
+(setq org-list-demote-modify-bullet
+      '(("+" . "-") ("-" . "+") ("1." . "a.") ("a." . "-")))
 
 ;; default org file apps
 (setq -org-file-apps
@@ -170,12 +211,20 @@ resourcereport resourceGraph \"\" {
 	(auto-mode . emacs)))
 
 ;; org agenda files
-(setq org-agenda-files (list "/home/cmhyett/Dropbox/Research/TetradTurbulence/MLCoarseGrainedVGT/docs/Article/article.org"
-			     "~/Dropbox/GTD/brownBag.org"
+;; (setq org-agenda-files (list "/home/cmhyett/Dropbox/Research/TetradTurbulence/MLCoarseGrainedVGT/docs/Article/article.org"
+;; 			     "~/Dropbox/GTD/brownBag.org"
+;; 			     "~/Dropbox/GTD/inbox.org"
+;;  			     "~/Dropbox/GTD/Projects/projects.org"
+;;  			     "~/Dropbox/GTD/today.org"
+;;  			     "~/Dropbox/GTD/tickler.org"
+;; 			     "~/Dropbox/ClassNotes/Math541_MathPhysics/mathPhysics.org"
+;; 			     "~/Dropbox/ClassNotes/Math565B_StochasticProcesses/stochasticProcesses.org"))
+
+(setq org-agenda-files (list "~/Dropbox/GTD/brownBag.org"
 			     "~/Dropbox/GTD/inbox.org"
- 			     "~/Dropbox/GTD/Projects/projects.org"
  			     "~/Dropbox/GTD/today.org"
  			     "~/Dropbox/GTD/tickler.org"))
+
 ;; org capture mode
 (setq org-capture-templates '(("t" "Todo [inbox]" entry
 			       (file "~/Dropbox/GTD/inbox.org")
@@ -216,6 +265,22 @@ resourcereport resourceGraph \"\" {
 (setq org-ref-bibliography-notes "~/Dropbox/bibliography/notes.org"
       org-ref-default-bibliography '("~/Dropbox/bibliography/references.bib")
       org-ref-pdf-directory "~/Dropbox/bibliography/bibtex-pdfs/")
-(setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+(setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdflatex=xelatex -pdf %f"))
 (require 'org-ref)
 (require 'doi-utils)
+
+(add-to-list 'org-latex-classes
+	     '("revtex4-1"
+	       "\\documentclass{revtex4-1}"
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\subsection{%s}" . "\\subsection*{%s}")       
+	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+	     )
+
+(add-hook 'julia-mode-hook 'display-fill-column-indicator-mode)
+
+(fset 'org-latex-insert-equation
+   (kmacro-lambda-form [?\\ ?b ?e ?g ?i ?n ?\{ ?e ?q ?u ?a ?t ?i ?o ?n ?\} return return ?\\ ?e ?n ?d ?\{ ?e ?q ?u ?a ?t ?i ?o ?n ?\} ?\C-c ?\' ?\C-p tab] 0 "%d"))
+
+
+(setq python-shell-interpreter "python3")
