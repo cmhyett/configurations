@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cp -r ./emacs.d ~/.emacs.d
+cp -r .emacs.d/ ~/.emacs.d
